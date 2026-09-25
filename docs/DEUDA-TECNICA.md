@@ -1,5 +1,8 @@
 # Deuda Tecnica — laboratorio-pedidos
 
+**Grupo:** Mini-proyecto laboratorio
+**Integrante:** Ramiro Corrales
+
 ## Resumen del diagnostico
 
 | # | Síntoma observado | Evidencia (archivo:línea) | Tipo de deuda | Patrón aplicado | Consecuencia asumida |

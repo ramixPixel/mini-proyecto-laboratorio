@@ -106,6 +106,12 @@ El PR revisado por otro grupo es evidencia del TP Integrador.
 - **Se documenta la consecuencia negativa.** Un patrón sin contras analizadas
   es sobreingeniería esperando su turno.
 
+## Integrantes
+
+- **Ramiro Corrales**
+
+---
+
 ## Historia de commits
 
 ```
