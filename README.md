@@ -3,16 +3,9 @@
 Sistema de gestión de pedidos de un laboratorio de análisis clínicos.
 **PHP Vanilla, sin frameworks, sin Composer.** Corre en XAMPP tal cual está.
 
-> ⚠️ **Este proyecto está roto a propósito.**
-> Cada archivo contiene deuda técnica sembrada, marcada con comentarios:
->
-> ```php
-> // ❌ MAL APLICADO: qué método está mal y qué principio viola
-> // ✅ FORMA CORRECTA: qué patrón corresponde y cómo se estructura
-> ```
->
-> El objetivo no es que funcione mejor: ya funciona. El objetivo es que
-> **se pueda cambiar sin miedo**.
+> ⚠️ **Este proyecto fue refactorizado aplicando 8 patrones de diseño.**
+> El historial de git muestra cada patrón en su propia rama con PR propio.
+> Ver `docs/DEUDA-TECNICA.md` para el diagnóstico completo.
 
 ---
 
@@ -26,16 +19,33 @@ Acciones disponibles:
 
 | URL | Qué hace |
 |---|---|
-| `public/index.php?accion=crear` | Crea un pedido pasando por toda la deuda |
+| `public/index.php?accion=crear` | Crea un pedido pasando por toda la arquitectura |
 | `public/index.php?accion=listar` | Lista pedidos desde la vista |
-| `public/index.php?accion=reporte` | Genera un reporte con banderas booleanas |
+| `public/index.php?accion=reporte` | Genera un reporte con decoradores |
 
 La persistencia está simulada en memoria para que el proyecto arranque sin
 configurar MySQL. Eso **no** es parte de la deuda a corregir.
 
 ---
 
-## Mapa de deudas
+## Arquitectura después del refactor
+
+| Patrón aplicado | Archivos |
+|---|---|
+| **Autoload + Config** | `public/index.php`, `config/database.example.php` |
+| **Singleton** | `src/Database/Connection.php` |
+| **Strategy** | `src/Pricing/Strategies/`, `src/Pricing/PriceCalculator.php` |
+| **Factory** | `src/Notifications/NotificationFactory.php`, `src/Notifications/Notification.php` |
+| **Adapter** | `src/Legacy/LegacyNotifierAdapter.php`, `src/Legacy/LegacyNotifier.php` |
+| **Decorator** | `src/Reports/Contracts/`, `src/Reports/Decorators/` |
+| **Observer** | `src/Events/OrderObserver.php`, `src/Events/SmsObserver.php`, `src/Events/EmailObserver.php` |
+| **Facade** | `src/Services/OrderService.php` + servicios cohesivos |
+| **MVC + SRP** | `src/Controllers/OrderController.php` |
+| **MVC (vista)** | `views/orders.php` |
+
+---
+
+## Mapa de deudas original
 
 | Archivo | Síntoma sembrado | Patrón / principio | Ejercicio |
 |---|---|---|---|
@@ -55,7 +65,7 @@ configurar MySQL. Eso **no** es parte de la deuda a corregir.
 
 ## La medida de la deuda de este proyecto
 
-El descuento de obra social (**0.7**) está escrito en **cinco archivos distintos**:
+**Antes del refactor:** el descuento de obra social (**0.7**) estaba escrito en **5 archivos distintos**.
 
 ```
 src/Models/Order.php
@@ -65,10 +75,8 @@ src/Controllers/OrderController.php
 views/orders.php
 ```
 
-Cuando el laboratorio lo cambie al 25%, ese número es exactamente
-cuántos lugares hay que tocar y cuántas oportunidades hay de olvidarse uno.
-
-**Ese es el punto de toda la unidad.**
+**Después del refactor:** el descuento queda centralizado en
+`src/Pricing/Strategies/InsuranceStrategy.php`. El cambio ahora toca **1 archivo**.
 
 ---
 
@@ -97,3 +105,14 @@ El PR revisado por otro grupo es evidencia del TP Integrador.
   deuda nueva.
 - **Se documenta la consecuencia negativa.** Un patrón sin contras analizadas
   es sobreingeniería esperando su turno.
+
+## Historia de commits
+
+```
+feat(pricing): reemplazar switch por Strategy con interfaz y 3 implementaciones
+feat(database): aplicar Singleton a Connection, constructor privado e instancia unica
+feat(bootstrap): agregar autoload PSR-4 y config externo
+```
+
+Cada patrón vive en su propia rama: `feat/patron-<nombre>`.
+Ver `git log --oneline` para el historial completo.
