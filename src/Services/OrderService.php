@@ -9,6 +9,8 @@ use Laboratorio\Events\OrderEvents;
 use Laboratorio\Models\Order;
 use Laboratorio\Notifications\EmailNotification;
 use Laboratorio\Notifications\SmsNotification;
+use Laboratorio\Pricing\PriceCalculator;
+use Laboratorio\Pricing\PricingStrategyFactory;
 use Laboratorio\Reports\ReportGenerator;
 
 /**
@@ -62,14 +64,9 @@ class OrderService
             return;
         }
 
-        // ---- 2. Calculo de precio (deberia ser una Strategy) ----
-        $total = $monto;
-
-        if ($tipoPaciente === 'obra_social') {
-            $total = $monto * 0.7;          // ❌ tercera copia del 0.7 en el proyecto
-        } elseif ($tipoPaciente === 'jubilado') {
-            $total = $monto * 0.5;
-        }
+        // ---- 2. Calculo de precio delegado en una Strategy ----
+        $calculadora = new PriceCalculator(PricingStrategyFactory::forPatientType($tipoPaciente));
+        $total = $calculadora->calculate($monto);
 
         // ---- 3. Persistencia (deberia ser un Repository) ----
         // ❌ new adentro del metodo: no se puede reemplazar por un doble en pruebas

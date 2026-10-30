@@ -7,6 +7,8 @@ namespace Laboratorio\Controllers;
 use Laboratorio\Database\Connection;
 use Laboratorio\Models\Order;
 use Laboratorio\Notifications\NotificationSender;
+use Laboratorio\Pricing\PriceCalculator;
+use Laboratorio\Pricing\PricingStrategyFactory;
 use Laboratorio\Reports\ReportGenerator;
 
 /**
@@ -45,8 +47,9 @@ class OrderController
         $monto    = (float) ($_GET['monto'] ?? 15000);
         $tipo     = $_GET['tipo'] ?? 'obra_social';
 
-        // ❌ 2. Regla de negocio dentro del controlador (deberia ser Strategy)
-        $total = $tipo === 'obra_social' ? $monto * 0.7 : $monto;
+        // 2. Regla de negocio delegada en una Strategy
+        $calculadora = new PriceCalculator(PricingStrategyFactory::forPatientType($tipo));
+        $total = $calculadora->calculate($monto);
 
         // ❌ 3. SQL dentro del controlador (deberia ser Repository)
         $conexion = Connection::getInstance();
@@ -86,6 +89,19 @@ class OrderController
      */
     public function index(): void
     {
+        $pedidos = [
+            ['id' => 1, 'paciente' => 'Juan Perez', 'monto' => 15000, 'tipo' => 'obra_social'],
+            ['id' => 2, 'paciente' => 'Ana Gomez', 'monto' => 22000, 'tipo' => 'particular'],
+        ];
+
+        foreach ($pedidos as &$pedido) {
+            $calculadora = new PriceCalculator(
+                PricingStrategyFactory::forPatientType($pedido['tipo'])
+            );
+            $pedido['total'] = $calculadora->calculate((float) $pedido['monto']);
+        }
+        unset($pedido);
+
         require __DIR__ . '/../../views/orders.php';
     }
 
