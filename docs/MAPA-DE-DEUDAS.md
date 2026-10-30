@@ -3,6 +3,10 @@
 Planilla de trabajo para la clase práctica. Cada grupo completa **una fila**
 durante la ronda de refactor y la usa como descripción de su Pull Request.
 
+> Las rutas de esta planilla corresponden al commit base `c657de9`. Después
+> del refactor esos archivos fueron reemplazados o divididos. El estado final,
+> la evidencia y los PR están en [`DEUDA-TECNICA.md`](DEUDA-TECNICA.md).
+
 | Archivo | Síntoma sembrado | Principio violado | Patrón que lo repara | Grupo | Rama | PR |
 |---|---|---|---|---|---|---|
 | `public/index.php` | Requires manuales, credenciales, ruteo con `if` | OCP + configuración en código | Autoload + tabla de rutas | | | |
