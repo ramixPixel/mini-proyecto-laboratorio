@@ -27,10 +27,16 @@ use Laboratorio\Services\Validation\PositiveAmountRule;
  *     PatientTypeRequiredRule -> el tipo de paciente es obligatorio
  *     OrderValidator          -> recorre la cadena y corta en la primera que falla
  *
- *  CONSECUENCIA ASUMIDA
- *     Mas archivos para tres reglas cortas. La cadena se detiene en el primer
- *     error: no acumula todos los mensajes. Y el orden importa, porque la
- *     primera regla que falla define el mensaje que ve el usuario.
+ *  CAMBIOS POSITIVOS
+ *     1. Agregar una regla nueva ya no modifica OrderValidator (abierto/cerrado).
+ *     2. Cada regla es una clase chica, con una sola responsabilidad.
+ *     3. Las reglas se pueden inyectar por constructor: sirven en otros flujos.
+ *
+ *  CAMBIOS NEGATIVOS
+ *     1. Tres archivos nuevos para tres reglas de dos lineas.
+ *     2. La cadena corta en el primer error: no acumula todos los mensajes.
+ *     3. El orden importa, porque la primera regla que falla define el mensaje
+ *        que ve el usuario.
  * ============================================================================
  */
 final class OrderValidator
