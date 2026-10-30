@@ -1,21 +1,19 @@
 <?php
-
-declare(strict_types=1);
-
-namespace Laboratorio\Services;
-
-use Laboratorio\Models\Order;
-use Laboratorio\Pricing\PriceCalculator;
-use Laboratorio\Pricing\PricingStrategyFactory;
-
-final class OrderPricer
+class OrderPricer
 {
     public function calculate(Order $order): float
     {
-        $calculator = new PriceCalculator(
-            PricingStrategyFactory::forPatientType($order->patientType)
-        );
+        // Seleccionamos la estrategia según el tipo de paciente
+        $strategy = match ($order->patientType) {
+            'obra_social' => new InsuranceStrategy(),
+            'jubilado'    => new RetiredStrategy(),
+            'prepaga'     => new PrepaidStrategy(),
+            default       => new PrivatePatientStrategy(),
+        };
 
+        // Usamos el PriceCalculator que ya aplica el patrón
+        $calculator = new PriceCalculator($strategy);
+        
         return $calculator->calculate($order->amount);
     }
 }
