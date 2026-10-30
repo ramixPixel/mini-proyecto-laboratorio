@@ -16,6 +16,7 @@ use Laboratorio\Notifications\NotificationSender;
 use Laboratorio\Notifications\WhatsAppNotification;
 use Laboratorio\Pricing\PriceCalculator;
 use Laboratorio\Pricing\PricingStrategyFactory;
+use Laboratorio\Pricing\Strategies\PrivatePatientStrategy;
 use Laboratorio\Reports\BasicReport;
 use Laboratorio\Reports\DigitalSignatureDecorator;
 use Laboratorio\Reports\PdfReportDecorator;
@@ -263,6 +264,32 @@ test('Order: valida invariantes en el constructor', function (): void {
         static fn (): Order => new Order(1, 'Juan', -1.0, 'particular'),
         InvalidArgumentException::class
     );
+});
+
+test('OrderValidator: rechaza importe en cero', function (): void {
+    $validator = new OrderValidator();
+
+    assertThrows(
+        static fn (): mixed => $validator->validate(new Order(12, 'Juan Perez', 0.0, 'particular')),
+        InvalidArgumentException::class
+    );
+
+    $validator->validate(new Order(13, 'Juan Perez', 0.01, 'particular'));
+    assertTrue(true);
+});
+
+test('OrderValidator: exige tipo de paciente', function (): void {
+    assertThrows(
+        static fn (): mixed => (new OrderValidator())->validate(new Order(14, 'Ana Gomez', 1000.0, '  ')),
+        InvalidArgumentException::class
+    );
+});
+
+test('PricingStrategyFactory: tipo desconocido cae en particular', function (): void {
+    $strategy = PricingStrategyFactory::forPatientType('tipo_inexistente');
+
+    assertInstanceOf(PrivatePatientStrategy::class, $strategy);
+    assertFloat(1000.0, $strategy->calculate(1000.0));
 });
 
 test('HTTP crear: conserva email y HTML de confirmacion', function (): void {
