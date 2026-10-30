@@ -30,16 +30,13 @@ final class OrderService
     public function createOrder(Order $order): OrderResult
     {
         $this->validator->validate($order);
-
         $result = new OrderResult(
             $order->id,
             $order->patient,
             $this->pricer->calculate($order)
         );
-
         $this->repository->save($result);
         $this->events->notify($order);
-
         return $result;
     }
 
