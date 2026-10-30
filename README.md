@@ -8,9 +8,9 @@ El proyecto nació con deuda técnica sembrada a propósito. Este repositorio es
 el resultado del refactor: se aplicaron ocho patrones de diseño, se separaron
 las capas y se agregó una suite de pruebas sin dependencias externas.
 
-- **Estado:** 8/8 patrones aplicados, 19 pruebas pasando.
+- **Estado:** 8/8 patrones aplicados, 22 pruebas pasando.
 - **Entrega:** TP Integrador — Metodología de Sistemas II — UTN FRRe (sede Formosa).
-- **Integrante:** Ramiro Corrales.
+- **Integrantes:** Ramiro Corrales y Lía Barcos.
 
 ---
 
@@ -143,7 +143,7 @@ php tests/run.php
 Salida esperada:
 
 ```
-19 pruebas correctas, 0 fallidas.
+22 pruebas correctas, 0 fallidas.
 ```
 
 Qué cubre:
@@ -156,6 +156,8 @@ Qué cubre:
 - Singleton: instancia única.
 - Facade/Repository: cálculo, persistencia con parámetros y listado.
 - Invariantes de `Order`.
+- Validación de entrada: importe en cero y tipo de paciente vacío.
+- Strategy: un tipo de paciente desconocido cae en particular.
 - Smoke tests HTTP de `crear`, `listar` y `reporte`.
 - Escape de salida (XSS) en la confirmación.
 - Error de validación mostrado sin fatal (paciente vacío).
