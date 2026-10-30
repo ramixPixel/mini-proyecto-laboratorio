@@ -26,7 +26,7 @@ use Laboratorio\Database\Connection;
 // ❌ MAL APLICADO: la vista abre la conexion por su cuenta. En el sistema real
 //    aca va un SELECT. La vista NO deberia saber que existe una base de datos.
 //    ✅ Los datos tienen que llegar desde el controlador: $pedidos ya resuelto.
-$conexion = Connection::obtener();
+$conexion = Connection::getInstance();
 $pedidos  = [
     ['id' => 1, 'paciente' => 'Juan Perez',  'monto' => 15000, 'tipo' => 'obra_social'],
     ['id' => 2, 'paciente' => 'Ana Gomez',   'monto' => 22000, 'tipo' => 'particular'],

@@ -4,40 +4,38 @@ declare(strict_types=1);
 
 namespace Laboratorio\Database;
 
-use Throwable;
+use InvalidArgumentException;
 
 /**
  * ============================================================================
  *  CONEXION A LA BASE DE DATOS
- *  Patron esperado: SINGLETON (creacional)
+ *  Patron aplicado: SINGLETON (creacional)
  * ============================================================================
  *
- *  ❌ DEUDA SEMBRADA
- *     1. obtener() crea una conexion NUEVA en cada llamada.
- *     2. Las credenciales llegan por constantes globales definidas en index.php.
- *     3. La excepcion se traga en silencio y el sistema sigue como si nada.
+ *  Una unica instancia por request. La configuracion se inyecta desde el
+ *  bootstrap y los errores se propagan: fallar rapido y fuerte.
  *
- *  ✅ FORMA CORRECTA
- *     1. Singleton: constructor privado + instancia estatica + getInstance().
- *     2. La configuracion se inyecta, no se lee de constantes globales.
- *     3. Si la conexion falla, el error se propaga: fallar rapido y fuerte.
- *
- *  ⚠️ Advertencia de la clase: Singleton sirve para conexion, logger y
- *     configuracion. NO para guardar el pedido actual ni el usuario logueado.
- *     Ahi deja de ser un patron y pasa a ser una variable global disfrazada.
+ *  Advertencia: Singleton sirve para conexiones, loggers y configuracion.
+ *  NO para guardar el pedido actual ni el usuario logueado; ahi pasa a ser
+ *  una variable global disfrazada.
  * ============================================================================
  */
-
-class Connection
+final class Connection
 {
+    private static ?self $instance = null;
+
     /** @var array<string, string> */
     private static array $config = [];
 
-    /** Almacen en memoria para poder correr la demo sin MySQL levantado. */
-    private static array $tablaEnMemoria = [];
+    /** Almacen en memoria para poder correr la demo sin MySQL levantado. @var list<string> */
+    private static array $historial = [];
+
+    private function __construct()
+    {
+    }
 
     /**
-     * Recibe la configuracion desde el punto de entrada.
+     * Recibe la configuracion externa una sola vez, desde el bootstrap.
      *
      * @param array<string, string> $config
      */
@@ -52,54 +50,27 @@ class Connection
         return self::$config;
     }
 
-    /**
-     * ❌ METODO MAL APLICADO: obtener()
-     *    Devuelve una instancia nueva cada vez que se lo llama.
-     *    Con 40 consultas por request, el sistema abre 40 conexiones.
-     */
-    public static function obtener(): Connection
+    public static function getInstance(): self
     {
-        return new Connection();
-    }
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
 
-    /*
-     * ✅ FORMA CORRECTA — Singleton:
-     *
-     * private static ?Connection $instance = null;
-     *
-     * private function __construct(private PDO $pdo) {}
-     *
-     * public static function getInstance(array $config): Connection
-     * {
-     *     if (self::$instance === null) {
-     *         $dsn = "mysql:host={$config['host']};dbname={$config['name']};charset=utf8mb4";
-     *         self::$instance = new Connection(
-     *             new PDO($dsn, $config['user'], $config['pass'], [
-     *                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-     *             ])
-     *         );
-     *     }
-     *     return self::$instance;
-     * }
-     *
-     * Ejercicio: por que el constructor tiene que ser private?
-     * Respuesta: para que nadie pueda hacer new Connection() desde afuera
-     * y romper la garantia de instancia unica.
-     */
+        return self::$instance;
+    }
 
     public function ejecutar(string $sql): void
     {
-        try {
-            self::$tablaEnMemoria[] = $sql;
-        } catch (Throwable $e) {
-            // ❌ MAL APLICADO: la excepcion se traga y el sistema sigue.
-            //    El pedido "se guardo" aunque no se guardo nada.
-            //    ✅ Loguear y relanzar: throw new RuntimeException('...', 0, $e);
+        if (trim($sql) === '') {
+            throw new InvalidArgumentException('La consulta SQL no puede estar vacia');
         }
+
+        self::$historial[] = $sql;
     }
 
+    /** @return list<string> */
     public function consultas(): array
     {
-        return self::$tablaEnMemoria;
+        return self::$historial;
     }
 }

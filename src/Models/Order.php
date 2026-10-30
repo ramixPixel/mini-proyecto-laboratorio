@@ -68,7 +68,7 @@ class Order
      */
     public function guardar(): void
     {
-        $conexion = Connection::obtener();
+        $conexion = Connection::getInstance();
         $conexion->ejecutar(
             "INSERT INTO orders (id, patient, amount) VALUES ({$this->id}, '{$this->patient}', {$this->amount})"
         );
