@@ -32,6 +32,14 @@ asumida.
 | Todo el proyecto entró en un único commit inicial, sin ramas ni PR | `git log --oneline c657de9` (un solo commit) | Proceso — historial | Una rama y un PR por patrón, con descripción de tres preguntas | Más overhead de ramas y merges. El historial queda más ruidoso, pero cada cambio es auditable y reversible. |
 | No había tests ni forma reproducible de verificar el comportamiento | No existe `tests/` en `c657de9` | Proceso — verificación | Runner propio sin dependencias + smoke tests HTTP | Runner casero sin mocks, data providers ni cobertura. Los smoke tests lanzan un proceso PHP por acción. |
 
+### Deuda posterior al refactor
+
+Detectada sobre la primera iteración (commit `5771a9c`), no sobre la base:
+
+| Síntoma observado | Evidencia (archivo:línea) | Tipo de deuda | Patrón aplicado | Consecuencia asumida |
+|---|---|---|---|---|
+| `OrderValidator::validate()` encadenaba un `if` por regla; agregar una regla obligaba a editar la clase | `src/Services/OrderValidator.php:12-25` en `5771a9c` | Diseño — OCP | **Chain of Responsibility** (`OrderRule` + una clase por regla) | Más archivos para tres reglas cortas; la cadena corta en el primer error y no acumula mensajes. |
+
 ## Métrica: el `0.7`
 
 | Antes | Después |
@@ -59,6 +67,7 @@ asumida.
 | Facade | `feat/patron-facade` | [#9](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/9) | `src/Services/` |
 | MVC | `feat/patron-mvc` | [#10](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/10) | `src/Controllers/`, `views/` |
 | Tests | `test/runner-sin-dependencias` | [#11](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/11) | `tests/` |
+| Chain of Responsibility | `feat/patron-chain-validacion` | [#16](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/16) | `src/Services/Validation/` |
 
 El PR [#1](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/1)
 restauró la línea base antes de empezar la serie.
@@ -67,7 +76,7 @@ restauró la línea base antes de empezar la serie.
 
 ```bash
 php tests/run.php
-# 19 pruebas correctas, 0 fallidas.
+# 23 pruebas correctas, 0 fallidas.
 ```
 
 Las tres acciones conservan su salida:

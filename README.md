@@ -8,7 +8,7 @@ El proyecto nació con deuda técnica sembrada a propósito. Este repositorio es
 el resultado del refactor: se aplicaron ocho patrones de diseño, se separaron
 las capas y se agregó una suite de pruebas sin dependencias externas.
 
-- **Estado:** 8/8 patrones aplicados, 22 pruebas pasando.
+- **Estado:** 9/9 patrones aplicados, 23 pruebas pasando.
 - **Entrega:** TP Integrador — Metodología de Sistemas II — UTN FRRe (sede Formosa).
 - **Integrantes:** Ramiro Corrales y Lía Barcos.
 
@@ -124,6 +124,7 @@ views/                        Vistas con salida escapada
 | **Facade** | `src/Services/` | Una fachada simple sobre validación, precio, persistencia y reporte. |
 | **Singleton** | `src/Database/Connection.php` | Una sola conexión por request. |
 | **MVC** | `src/Controllers/` + `views/` | Separar controlador, servicio y presentación. |
+| **Chain of Responsibility** | `src/Services/Validation/` | Agregar reglas de validación sin editar el validador. |
 
 Cada patrón tiene su rama y su PR. El detalle de la deuda, la evidencia y la
 consecuencia negativa de cada decisión está en
@@ -143,7 +144,7 @@ php tests/run.php
 Salida esperada:
 
 ```
-22 pruebas correctas, 0 fallidas.
+23 pruebas correctas, 0 fallidas.
 ```
 
 Qué cubre:
@@ -158,6 +159,7 @@ Qué cubre:
 - Invariantes de `Order`.
 - Validación de entrada: importe en cero y tipo de paciente vacío.
 - Strategy: un tipo de paciente desconocido cae en particular.
+- Chain of Responsibility: una regla nueva se agrega sin tocar el validador.
 - Smoke tests HTTP de `crear`, `listar` y `reporte`.
 - Escape de salida (XSS) en la confirmación.
 - Error de validación mostrado sin fatal (paciente vacío).
@@ -197,6 +199,15 @@ Los consumidores (`OrderService`, `OrderEvents`, controlador) no cambian.
 Implementar `OrderObserver` y suscribirlo en `public/index.php`. No se toca
 `OrderEvents`.
 
+### Agregar una regla de validación
+
+1. Implementar `OrderRule` en `src/Services/Validation/`.
+2. Sumarla a la lista por defecto de `OrderValidator`, o inyectar la lista
+   completa desde el composition root.
+3. Agregar la prueba.
+
+`OrderValidator` no cambia: solo recorre la cadena.
+
 ---
 
 ## Flujo de trabajo y PRs
@@ -219,6 +230,8 @@ La serie respeta una rama y un PR por patrón:
 | [#12](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/12) | `docs/deuda-tecnica-readme` | README reproducible y `docs/DEUDA-TECNICA.md`. |
 | [#13](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/13) | `fix/cumplimiento-consigna` | `createOrder` en menos de 10 líneas y `config/` ignorado salvo el ejemplo. |
 | [#14](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/14) | `fix/validacion-crear` | Error de validación mostrado sin fatal. |
+| [#15](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/15) | `test/validacion-entradas` | Casos de validación y registro de integrantes. |
+| [#16](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/16) | `feat/patron-chain-validacion` | Reglas de validación como cadena de responsabilidad. |
 
 La serie se mergeó en orden; no hubo conflictos que resolver en Git.
 
@@ -243,6 +256,8 @@ Ningún patrón es gratis. Las consecuencias asumidas están documentadas en
   solo lugar.
 - **Factory:** centraliza la creación, pero la factory crece con cada canal.
 - **Observer:** desacopla, pero una excepción en un observador corta la cadena.
+- **Chain of Responsibility:** una clase por regla, pero el validador deja de
+  cambiar; la cadena corta en el primer error.
 - **Adapter:** aísla al proveedor, pero agrega una indirección.
 - **Decorator:** composición flexible, pero el orden importa y es manual.
 - **Facade:** simplifica al consumidor, pero multiplica archivos.

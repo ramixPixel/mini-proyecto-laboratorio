@@ -25,6 +25,7 @@ use Laboratorio\Services\OrderPricer;
 use Laboratorio\Services\OrderRepository;
 use Laboratorio\Services\OrderService;
 use Laboratorio\Services\OrderValidator;
+use Laboratorio\Services\Validation\OrderRule;
 
 $passed = 0;
 $failed = 0;
@@ -290,6 +291,27 @@ test('PricingStrategyFactory: tipo desconocido cae en particular', function (): 
 
     assertInstanceOf(PrivatePatientStrategy::class, $strategy);
     assertFloat(1000.0, $strategy->calculate(1000.0));
+});
+
+test('Chain: una regla nueva se agrega sin tocar el validador', function (): void {
+    $sinPrepaga = new class implements OrderRule {
+        public function check(Order $order): void
+        {
+            if ($order->patientType === 'prepaga') {
+                throw new InvalidArgumentException('La prepaga no esta habilitada');
+            }
+        }
+    };
+
+    $validator = new OrderValidator([$sinPrepaga]);
+
+    assertThrows(
+        static fn (): mixed => $validator->validate(new Order(15, 'Ana Gomez', 1000.0, 'prepaga')),
+        InvalidArgumentException::class
+    );
+
+    $validator->validate(new Order(16, 'Ana Gomez', 1000.0, 'particular'));
+    assertTrue(true);
 });
 
 test('HTTP crear: conserva email y HTML de confirmacion', function (): void {
