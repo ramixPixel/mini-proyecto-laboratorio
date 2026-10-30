@@ -1,7 +1,7 @@
 # Deuda Tecnica — laboratorio-pedidos
 
 **Grupo:** Mini-proyecto laboratorio
-**Integrante:** Ramiro Corrales
+**Integrante:** Ramiro Corrales, Soria Sergio, Barcos Lia.
 
 ## Resumen del diagnostico
 
