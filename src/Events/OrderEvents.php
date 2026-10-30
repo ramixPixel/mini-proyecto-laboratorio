@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Laboratorio\Events;
 
 use Laboratorio\Models\Order;
-use Laboratorio\Notifications\EmailNotification;
-use Laboratorio\Notifications\SmsNotification;
+use Laboratorio\Notifications\NotificationSender;
 
 /**
  * ============================================================================
@@ -36,12 +35,9 @@ class OrderEvents
      */
     public function pedidoCreado(Order $order): void
     {
-        // ❌ llamadas directas y encadenadas
-        $email = new EmailNotification();
-        $email->enviarEmail('paciente@mail.com', 'Pedido creado', "Pedido {$order->id}");
-
-        $sms = new SmsNotification();
-        $sms->mandarSms('3704000000', "Pedido {$order->id} creado");
+        $notificador = new NotificationSender();
+        $notificador->enviar('email', 'paciente@mail.com', "Pedido {$order->id} creado");
+        $notificador->enviar('sms', '3704000000', "Pedido {$order->id} creado");
 
         // ❌ Si esta linea lanza una excepcion, el mail ya salio pero el
         //    dashboard nunca se entera. Estado inconsistente y silencioso.

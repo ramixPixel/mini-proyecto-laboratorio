@@ -7,8 +7,7 @@ namespace Laboratorio\Services;
 use Laboratorio\Database\Connection;
 use Laboratorio\Events\OrderEvents;
 use Laboratorio\Models\Order;
-use Laboratorio\Notifications\EmailNotification;
-use Laboratorio\Notifications\SmsNotification;
+use Laboratorio\Notifications\NotificationSender;
 use Laboratorio\Pricing\PriceCalculator;
 use Laboratorio\Pricing\PricingStrategyFactory;
 use Laboratorio\Reports\ReportGenerator;
@@ -73,17 +72,9 @@ class OrderService
         $order = new Order($id, $paciente, $total, $tipoPaciente);
         $order->guardar();
 
-        // ---- 4. Notificacion (deberia ser una Factory) ----
-        // ❌ MISMO if que ya existe en NotificationSender::enviar()
-        if ($tipoNotificacion === 'email') {
-            $email = new EmailNotification();
-            $email->enviarEmail($destino, 'Pedido creado', "Pedido {$id} por $ {$total}");
-        }
-
-        if ($tipoNotificacion === 'sms') {
-            $sms = new SmsNotification();
-            $sms->mandarSms($destino, "Pedido {$id} por $ {$total}");
-        }
+        // ---- 4. Notificacion resuelta por la Factory ----
+        $notificador = new NotificationSender();
+        $notificador->enviar($tipoNotificacion, $destino, "Pedido {$id} por $ {$total}");
 
         // ---- 5. Avisos internos (deberia ser un Observer) ----
         $eventos = new OrderEvents();
