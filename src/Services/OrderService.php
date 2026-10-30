@@ -10,7 +10,9 @@ use Laboratorio\Models\Order;
 use Laboratorio\Notifications\NotificationSender;
 use Laboratorio\Pricing\PriceCalculator;
 use Laboratorio\Pricing\PricingStrategyFactory;
-use Laboratorio\Reports\ReportGenerator;
+use Laboratorio\Reports\BasicReport;
+use Laboratorio\Reports\DigitalSignatureDecorator;
+use Laboratorio\Reports\PdfReportDecorator;
 
 /**
  * ============================================================================
@@ -80,9 +82,11 @@ class OrderService
         $eventos = new OrderEvents();
         $eventos->pedidoCreado($order);
 
-        // ---- 6. Reporte (deberia ser un Decorator) ----
-        $generador = new ReportGenerator();
-        echo $generador->generate("Pedido {$id}", true, true, false) . '<br>';
+        // ---- 6. Reporte armado con decoradores ----
+        $reporte = new BasicReport("Pedido {$id}");
+        $reporte = new DigitalSignatureDecorator($reporte);
+        $reporte = new PdfReportDecorator($reporte);
+        echo $reporte->generate() . '<br>';
 
         // ---- 7. Presentacion (deberia ser una View) ----
         echo "<p>Pedido {$id} procesado. Total: $ {$total}</p>";

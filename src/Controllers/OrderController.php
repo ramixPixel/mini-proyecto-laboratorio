@@ -9,7 +9,10 @@ use Laboratorio\Models\Order;
 use Laboratorio\Notifications\NotificationSender;
 use Laboratorio\Pricing\PriceCalculator;
 use Laboratorio\Pricing\PricingStrategyFactory;
-use Laboratorio\Reports\ReportGenerator;
+use Laboratorio\Reports\BasicReport;
+use Laboratorio\Reports\DigitalSignatureDecorator;
+use Laboratorio\Reports\PdfReportDecorator;
+use Laboratorio\Reports\WatermarkDecorator;
 
 /**
  * ============================================================================
@@ -106,13 +109,16 @@ class OrderController
     }
 
     /**
-     * ❌ METODO MAL APLICADO: report()
-     *    Usa banderas booleanas ilegibles (ver ReportGenerator).
+     * Reporte armado por composicion de decoradores.
      */
     public function report(): void
     {
-        $generador = new ReportGenerator();
-        echo $generador->generate('Pedidos del dia', true, true, true);
+        $reporte = new BasicReport('Pedidos del dia');
+        $reporte = new DigitalSignatureDecorator($reporte);
+        $reporte = new PdfReportDecorator($reporte);
+        $reporte = new WatermarkDecorator($reporte);
+
+        echo $reporte->generate();
     }
 }
 
