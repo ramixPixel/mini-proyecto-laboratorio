@@ -8,7 +8,7 @@ El proyecto nació con deuda técnica sembrada a propósito. Este repositorio es
 el resultado del refactor: se aplicaron ocho patrones de diseño, se separaron
 las capas y se agregó una suite de pruebas sin dependencias externas.
 
-- **Estado:** 8/8 patrones aplicados, 18 pruebas pasando.
+- **Estado:** 8/8 patrones aplicados, 19 pruebas pasando.
 - **Entrega:** TP Integrador — Metodología de Sistemas II — UTN FRRe (sede Formosa).
 - **Integrante:** Ramiro Corrales.
 
@@ -143,7 +143,7 @@ php tests/run.php
 Salida esperada:
 
 ```
-18 pruebas correctas, 0 fallidas.
+19 pruebas correctas, 0 fallidas.
 ```
 
 Qué cubre:
@@ -158,6 +158,7 @@ Qué cubre:
 - Invariantes de `Order`.
 - Smoke tests HTTP de `crear`, `listar` y `reporte`.
 - Escape de salida (XSS) en la confirmación.
+- Error de validación mostrado sin fatal (paciente vacío).
 
 Los smoke tests lanzan `tests/http-smoke.php` en un proceso aparte, setean
 `$_GET` y ejecutan `public/index.php` como lo haría el servidor.
@@ -215,6 +216,7 @@ La serie respeta una rama y un PR por patrón:
 | [#11](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/11) | `test/runner-sin-dependencias` | Runner de pruebas y smoke tests. |
 | [#12](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/12) | `docs/deuda-tecnica-readme` | README reproducible y `docs/DEUDA-TECNICA.md`. |
 | [#13](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/13) | `fix/cumplimiento-consigna` | `createOrder` en menos de 10 líneas y `config/` ignorado salvo el ejemplo. |
+| [#14](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/14) | `fix/validacion-crear` | Error de validación mostrado sin fatal. |
 
 La serie se mergeó en orden; no hubo conflictos que resolver en Git.
 

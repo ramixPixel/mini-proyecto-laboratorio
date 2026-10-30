@@ -67,7 +67,7 @@ restauró la línea base antes de empezar la serie.
 
 ```bash
 php tests/run.php
-# 18 pruebas correctas, 0 fallidas.
+# 19 pruebas correctas, 0 fallidas.
 ```
 
 Las tres acciones conservan su salida:

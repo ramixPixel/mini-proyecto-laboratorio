@@ -302,6 +302,12 @@ test('HTTP crear: escapa la salida del paciente', function (): void {
     assertTrue(!str_contains($output, '<script>alert(1)</script>'));
 });
 
+test('HTTP crear: error de validacion se muestra sin fatal', function (): void {
+    $output = runAction(['accion' => 'crear', 'paciente' => '']);
+
+    assertTrue(str_contains($output, 'El paciente es obligatorio'));
+});
+
 echo "\n{$passed} pruebas correctas, {$failed} fallidas.\n";
 
 exit($failed === 0 ? 0 : 1);
