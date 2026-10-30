@@ -27,7 +27,8 @@ final class Connection
     /** @var array<string, string> */
     private static array $config = [];
 
-    /** Almacen en memoria para poder correr la demo sin MySQL levantado. @var list<string> */
+    /** Almacen en memoria para poder correr la demo sin MySQL levantado. */
+    /** @var list<array{sql: string, params: array<string, int|float|string|null>}> */
     private static array $historial = [];
 
     private function __construct()
@@ -59,16 +60,19 @@ final class Connection
         return self::$instance;
     }
 
-    public function ejecutar(string $sql): void
+    /**
+     * @param array<string, int|float|string|null> $params
+     */
+    public function ejecutar(string $sql, array $params = []): void
     {
         if (trim($sql) === '') {
             throw new InvalidArgumentException('La consulta SQL no puede estar vacia');
         }
 
-        self::$historial[] = $sql;
+        self::$historial[] = ['sql' => $sql, 'params' => $params];
     }
 
-    /** @return list<string> */
+    /** @return list<array{sql: string, params: array<string, int|float|string|null>}> */
     public function consultas(): array
     {
         return self::$historial;
