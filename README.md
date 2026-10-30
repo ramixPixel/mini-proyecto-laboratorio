@@ -214,6 +214,7 @@ La serie respeta una rama y un PR por patrón:
 | [#10](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/10) | `feat/patron-mvc` | Controlador delgado y vistas. |
 | [#11](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/11) | `test/runner-sin-dependencias` | Runner de pruebas y smoke tests. |
 | [#12](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/12) | `docs/deuda-tecnica-readme` | README reproducible y `docs/DEUDA-TECNICA.md`. |
+| [#13](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/13) | `fix/cumplimiento-consigna` | `createOrder` en menos de 10 líneas y `config/` ignorado salvo el ejemplo. |
 
 La serie se mergeó en orden; no hubo conflictos que resolver en Git.
 
