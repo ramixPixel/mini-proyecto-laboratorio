@@ -70,8 +70,9 @@ MySQL. **Eso no es deuda a corregir en este TP.**
 
 ## Configuración
 
-La configuración real no se versiona. El arranque usa
-`config/database.example.php` si no existe `config/database.php`.
+La configuración real no se versiona. Todo `config/` está ignorado salvo
+`config/database.example.php`. El arranque usa el ejemplo si no existe
+`config/database.php`.
 
 Si se quiere preparar una configuración local:
 
@@ -85,7 +86,7 @@ En PowerShell:
 Copy-Item config/database.example.php config/database.php
 ```
 
-`config/database.php` está en `.gitignore`. No commitear credenciales.
+Todo `config/` está en `.gitignore` salvo el ejemplo. No commitear credenciales.
 
 > La demo actual no abre una conexión PDO: `Connection` guarda las consultas
 > en memoria. La configuración queda lista para cuando se conecte una base real.
@@ -96,7 +97,7 @@ Copy-Item config/database.example.php config/database.php
 
 ```
 bootstrap/autoload.php        Autoload PSR-4 para el prefijo Laboratorio\
-config/                       Configuración externa (database.php ignorado)
+config/                       Configuración externa (local ignorada; ejemplo versionado)
 public/index.php              Composition root: dependencias y tabla de rutas
 src/Controllers/              Controladores delgados (MVC)
 src/Database/                 Connection (Singleton)
@@ -212,6 +213,10 @@ La serie respeta una rama y un PR por patrón:
 | [#9](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/9) | `feat/patron-facade` | Facade y servicios cohesivos. |
 | [#10](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/10) | `feat/patron-mvc` | Controlador delgado y vistas. |
 | [#11](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/11) | `test/runner-sin-dependencias` | Runner de pruebas y smoke tests. |
+| [#12](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/12) | `docs/deuda-tecnica-readme` | README reproducible y `docs/DEUDA-TECNICA.md`. |
+| [#13](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/13) | `fix/cumplimiento-consigna` | `createOrder` en menos de 10 líneas y `config/` ignorado salvo el ejemplo. |
+
+La serie se mergeó en orden; no hubo conflictos que resolver en Git.
 
 Cada PR de patrón responde en su descripción:
 
