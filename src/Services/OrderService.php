@@ -1,4 +1,16 @@
 <?php
+
+declare(strict_types=1);
+
+namespace Laboratorio\Services;
+
+use Laboratorio\Database\Connection;
+use Laboratorio\Events\OrderEvents;
+use Laboratorio\Models\Order;
+use Laboratorio\Notifications\EmailNotification;
+use Laboratorio\Notifications\SmsNotification;
+use Laboratorio\Reports\ReportGenerator;
+
 /**
  * ============================================================================
  *  SERVICIO DE PEDIDOS

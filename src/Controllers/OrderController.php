@@ -1,4 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
+namespace Laboratorio\Controllers;
+
+use Laboratorio\Database\Connection;
+use Laboratorio\Models\Order;
+use Laboratorio\Notifications\NotificationSender;
+use Laboratorio\Reports\ReportGenerator;
+
 /**
  * ============================================================================
  *  CONTROLADOR DE PEDIDOS

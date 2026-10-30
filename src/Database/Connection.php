@@ -1,4 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
+namespace Laboratorio\Database;
+
+use Throwable;
+
 /**
  * ============================================================================
  *  CONEXION A LA BASE DE DATOS
@@ -23,8 +30,27 @@
 
 class Connection
 {
+    /** @var array<string, string> */
+    private static array $config = [];
+
     /** Almacen en memoria para poder correr la demo sin MySQL levantado. */
     private static array $tablaEnMemoria = [];
+
+    /**
+     * Recibe la configuracion desde el punto de entrada.
+     *
+     * @param array<string, string> $config
+     */
+    public static function configure(array $config): void
+    {
+        self::$config = $config;
+    }
+
+    /** @return array<string, string> */
+    public static function config(): array
+    {
+        return self::$config;
+    }
 
     /**
      * ❌ METODO MAL APLICADO: obtener()
