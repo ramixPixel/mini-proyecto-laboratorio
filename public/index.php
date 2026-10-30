@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 use Laboratorio\Controllers\OrderController;
 use Laboratorio\Database\Connection;
+use Laboratorio\Events\DashboardObserver;
+use Laboratorio\Events\EmailObserver;
+use Laboratorio\Events\OrderEvents;
+use Laboratorio\Notifications\NotificationSender;
+use Laboratorio\Services\OrderPricer;
+use Laboratorio\Services\OrderRepository;
+use Laboratorio\Services\OrderReporter;
+use Laboratorio\Services\OrderService;
+use Laboratorio\Services\OrderValidator;
 
 /**
  * ============================================================================
@@ -11,8 +20,8 @@ use Laboratorio\Database\Connection;
  *  Metodología de Sistemas II — UTN FRRe (sede Formosa)
  * ============================================================================
  *
- *  La carga de clases se resuelve con un autoloader PSR-4 y la configuración
- *  se lee desde /config, fuera del repositorio.
+ *  Composition root: autoload PSR-4, configuracion externa, construccion de
+ *  dependencias y tabla de rutas. Ninguna regla de negocio vive aca.
  * ============================================================================
  */
 
@@ -37,9 +46,23 @@ $config = require is_file($configFile)
     : dirname(__DIR__) . '/config/database.example.php';
 
 Connection::configure($config);
+$connection = Connection::getInstance();
+
+$events = new OrderEvents();
+$events->subscribe(new EmailObserver(new NotificationSender()));
+$events->subscribe(new DashboardObserver());
+
+$controller = new OrderController(
+    new OrderService(
+        new OrderValidator(),
+        new OrderPricer(),
+        new OrderRepository($connection),
+        $events
+    ),
+    new OrderReporter()
+);
 
 $accion = $_GET['accion'] ?? 'crear';
-$controller = new OrderController();
 
 $rutas = [
     'crear' => static function () use ($controller): void {
