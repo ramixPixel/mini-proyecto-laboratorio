@@ -8,7 +8,7 @@ El proyecto nació con deuda técnica sembrada a propósito. Este repositorio es
 el resultado del refactor: se aplicaron ocho patrones de diseño, se separaron
 las capas y se agregó una suite de pruebas sin dependencias externas.
 
-- **Estado:** 8/8 patrones aplicados, 18 pruebas pasando.
+- **Estado:** 8/8 patrones aplicados, 19 pruebas pasando.
 - **Entrega:** TP Integrador — Metodología de Sistemas II — UTN FRRe (sede Formosa).
 - **Integrante:** Ramiro Corrales.
 
@@ -143,7 +143,7 @@ php tests/run.php
 Salida esperada:
 
 ```
-18 pruebas correctas, 0 fallidas.
+19 pruebas correctas, 0 fallidas.
 ```
 
 Qué cubre:
@@ -158,6 +158,7 @@ Qué cubre:
 - Invariantes de `Order`.
 - Smoke tests HTTP de `crear`, `listar` y `reporte`.
 - Escape de salida (XSS) en la confirmación.
+- Error de validación mostrado sin fatal (paciente vacío).
 
 Los smoke tests lanzan `tests/http-smoke.php` en un proceso aparte, setean
 `$_GET` y ejecutan `public/index.php` como lo haría el servidor.
