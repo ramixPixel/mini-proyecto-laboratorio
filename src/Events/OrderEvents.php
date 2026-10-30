@@ -1,4 +1,13 @@
 <?php
+
+declare(strict_types=1);
+
+namespace Laboratorio\Events;
+
+use Laboratorio\Models\Order;
+use Laboratorio\Notifications\EmailNotification;
+use Laboratorio\Notifications\SmsNotification;
+
 /**
  * ============================================================================
  *  AVISOS AL CREARSE UN PEDIDO

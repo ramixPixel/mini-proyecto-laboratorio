@@ -1,4 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
+namespace Laboratorio\Models;
+
+use Laboratorio\Database\Connection;
+
 /**
  * ============================================================================
  *  MODELO Order

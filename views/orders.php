@@ -1,4 +1,9 @@
 <?php
+
+declare(strict_types=1);
+
+use Laboratorio\Database\Connection;
+
 /**
  * ============================================================================
  *  VISTA: listado de pedidos
