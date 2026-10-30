@@ -216,6 +216,7 @@ La serie respeta una rama y un PR por patrón:
 | [#11](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/11) | `test/runner-sin-dependencias` | Runner de pruebas y smoke tests. |
 | [#12](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/12) | `docs/deuda-tecnica-readme` | README reproducible y `docs/DEUDA-TECNICA.md`. |
 | [#13](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/13) | `fix/cumplimiento-consigna` | `createOrder` en menos de 10 líneas y `config/` ignorado salvo el ejemplo. |
+| [#14](https://github.com/ramixPixel/mini-proyecto-laboratorio/pull/14) | `fix/validacion-crear` | Error de validación mostrado sin fatal. |
 
 La serie se mergeó en orden; no hubo conflictos que resolver en Git.
 
