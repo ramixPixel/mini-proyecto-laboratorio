@@ -95,28 +95,4 @@ class Order
      * }
      */
 
-    /**
-     * ❌ METODO MAL APLICADO: calcularTotal()
-     *    Cadena de if con las reglas de precio de TODOS los tipos de paciente.
-     *    Agregar "prepaga" obliga a modificar el modelo => viola Abierto/Cerrado.
-     */
-    public function calcularTotal(): float
-    {
-        if ($this->patientType === 'particular') {
-            return $this->amount;
-        }
-
-        if ($this->patientType === 'obra_social') {
-            return $this->amount * 0.7;
-        }
-
-        // ❌ Y aca alguien va a pegar el proximo if. Y el siguiente.
-        return $this->amount;
-    }
-
-    /*
-     * ✅ FORMA CORRECTA: delegar en una estrategia.
-     *
-     * $total = (new PriceCalculator(new InsuranceStrategy()))->calculate($order->amount);
-     */
 }
