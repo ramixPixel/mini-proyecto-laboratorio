@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Laboratorio\Controllers;
 
+use InvalidArgumentException;
 use Laboratorio\Models\Order;
 use Laboratorio\Services\OrderReporter;
 use Laboratorio\Services\OrderService;
@@ -28,14 +29,20 @@ final class OrderController
 
     public function create(): void
     {
-        $order = new Order(
-            (int) ($_GET['id'] ?? 1),
-            (string) ($_GET['paciente'] ?? 'Juan Perez'),
-            (float) ($_GET['monto'] ?? 15000),
-            (string) ($_GET['tipo'] ?? 'obra_social')
-        );
-
-        $result = $this->service->createOrder($order);
+        try {
+            $order = new Order(
+                (int) ($_GET['id'] ?? 1),
+                (string) ($_GET['paciente'] ?? 'Juan Perez'),
+                (float) ($_GET['monto'] ?? 15000),
+                (string) ($_GET['tipo'] ?? 'obra_social')
+            );
+            $result = $this->service->createOrder($order);
+        } catch (InvalidArgumentException $e) {
+            http_response_code(400);
+            $error = $e->getMessage();
+            require __DIR__ . '/../../views/error.php';
+            return;
+        }
 
         require __DIR__ . '/../../views/order-created.php';
     }
